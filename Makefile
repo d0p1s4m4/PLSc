@@ -9,15 +9,15 @@ RM	:= rm -f
 endif
 
 ifeq ($(OS),Windows_NT)
-CFLAGS	+= /TC /Wall /WX /wd5045 /Za
+CFLAGS	+= /TC /Wall /WX /wd5045 /wd4820 /Za /D_CRT_SECURE_NO_WARNINGS
 LDFLAGS	+= /SUBSYSTEM:CONSOLE
 TARGET	= plsc.exe
 else
-CFLAGS	+= -Wall -Werror -Wextra -ansi 
+CFLAGS	+= -Wall -Werror -Wextra -ansi
 TARGET	= plsc
 endif
 
-SRCS	= main.c
+SRCS	= main.c scanner.c token.c term.c
 OBJS	= $(addprefix src/, $(SRCS:.c=.obj))
 ifeq ($(OS),Windows_NT)
 DELOBJS	= $(addprefix src\, $(SRCS:.c=.obj))
@@ -27,6 +27,16 @@ endif
 
 .PHONY: all
 all: $(TARGET)
+
+.PHONY: debug
+ifeq ($(OS),Windows_NT)
+debug: CFLAGS += /DEBUG /fsanitize=address
+debug: LDFLAGS += /DEBUG
+else
+debug: CFLAGS += -g -fsanitize=address -fsanitize=undefined
+debug: LDFLAGS += -g -fsanitize=address -fsanitize=undefined
+endif
+debug: $(TARGET)
 
 $(TARGET): $(OBJS)
 ifeq ($(OS),Windows_NT)
