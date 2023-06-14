@@ -11,12 +11,13 @@
 
 ### Prerequisites:
 
-**Mandatories**: 
+**Mandatories**:
 - a C compiler (gcc, clang, msvc....)
 - GNU Make
 - Git
 
 **Optionals**:
+- Inno Setup (:window: only)
 
 ### On UNIX-like OSes:
 
@@ -31,6 +32,13 @@ and then as root:
 ```
 
 ### On NT-like OSes:
+
+Install deps:
+```
+> winget import -i .\win32\winget-deps.json --accept-package-agreements
+```
+
+Building:
 
 ```
 > make
