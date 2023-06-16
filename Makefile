@@ -13,11 +13,11 @@ CFLAGS	+= /TC /Wall /WX /wd5045 /wd4820 /Za /D_CRT_SECURE_NO_WARNINGS
 LDFLAGS	+= /SUBSYSTEM:CONSOLE
 TARGET	= plsc.exe
 else
-CFLAGS	+= -Wall -Werror -Wextra -ansi
+CFLAGS	+= -Wall -Werror -Wextra -ansi -pedantic
 TARGET	= plsc
 endif
 
-SRCS	= main.c scanner.c token.c term.c
+SRCS	= main.c scanner.c token.c term.c error.c
 OBJS	= $(addprefix src/, $(SRCS:.c=.obj))
 ifeq ($(OS),Windows_NT)
 DELOBJS	= $(addprefix src\, $(SRCS:.c=.obj))

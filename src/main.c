@@ -37,6 +37,7 @@
 # include <libgen.h>
 #endif /* !_WIN32 */
 #include "scanner.h"
+#include "term.h"
 
 # define OPTARG_LONG_SEP_BASE "--"
 # define OPTARG_SHORT_SEP_BASE "-"
@@ -84,7 +85,8 @@
 											   OPTARG_LONG_SEP _l " " _v "\t" \
 											   _h "\n")
 
-static char *prg_name;
+char const *prg_name;
+int colorize = 1;
 
 void
 show_usage(int retval)
@@ -92,10 +94,12 @@ show_usage(int retval)
   printf("Usage: %s [OPTION]... [FILE]...\n", prg_name);
   printf("Transpile PL/Stupid source file to Assembly\n\n");
 
-  OPTARG_HELP_VAL("o", "out", "FILE", "");
-  OPTARG_LONG_HELP("dump-ast", "output AST as json and exit");
-  OPTARG_HELP("h", "help", "display this help and exit");
-  OPTARG_LONG_HELP("version", "output version information and exit");
+  OPTARG_HELP_VAL("o", "out", "FILE", "output file.");
+  OPTARG_LONG_HELP("no-color", "turn off colored output.");
+  OPTARG_LONG_HELP("dump-token", "output tokens as json and exit.");
+  OPTARG_LONG_HELP("dump-ast", "output AST as json and exit.");
+  OPTARG_HELP("h", "help", "display this help and exit.");
+  OPTARG_LONG_HELP("version", "output version information and exit.");
 
   printf("\nExamples:\n");
   printf("\t%s main.pls\tTranspile main.pls to main.s\n", prg_name);
@@ -111,7 +115,8 @@ show_version(void)
   printf("License BSD-3-Clause: <https://directory.fsf.org/wiki/License:BSD-3-Clause>\n");
   printf("This is free software: you are free to change and redistribute it.\n");
   printf("There is NO WARRANTY, to the extent permitted by law.\n");
-
+  printf("\nWritten by ");
+  term_url(stdout, "d0p1\n", "https://d0p1.eu");
   exit(EXIT_SUCCESS);
 }
 
@@ -119,7 +124,7 @@ int
 parse_flags(int argc, char *const argv[])
 {
   int idx;
-  
+
   for (idx = 0; idx < argc; idx++)
     {
       if (IS_OPTARG(argv[idx], "h", "help"))
@@ -132,7 +137,10 @@ parse_flags(int argc, char *const argv[])
 		}
 	  else if (IS_OPTARG(argv[idx], "o", "out"))
 		{
-		  
+		}
+	  else if (IS_OPTARG_LONG(argv[idx], "no-color"))
+		{
+		  colorize = 0;
 		}
 	  else if (IS_NOT_OPTARG(argv[idx]))
 		{
@@ -143,7 +151,7 @@ parse_flags(int argc, char *const argv[])
 		  show_usage(EXIT_FAILURE);
 		}
     }
-  
+
   return (idx);
 }
 
@@ -152,27 +160,32 @@ compile_single_file(char const *file)
 {
   Scanner scanner;
   Token tok;
+  int err_count;
   FILE *fp;
 
   fp = fopen(file, "r");
   if (fp == NULL)
 	{
-	  fprintf(stderr, "%s: fatal error: %s: %s\n",
-			  prg_name, file, strerror(errno));
-	  exit(EXIT_FAILURE);
+	  error_fatal("%s: %s", file, strerror(errno));
 	}
 
+  err_count = 0;
   scanner = scanner_init(fp, file);
   /* First pass */
   while (scanner_scan(&scanner, &tok) != 0)
 	{
-	  printf("%s (l:%zu,c:%zu,s:%zu)\n", token_to_str(tok.token), tok.line, tok.col, tok.length);
-	  if (tok.token == T_IDENT)
+	  if (tok.token == T_ERROR)
 		{
-		  printf("val: %s\n", tok.value.strval);
+		  error_tok(&tok);
+		  err_count++;
+		}
+
+	  if (err_count > 10)
+		{
+		  error_fatal("too many error, aborting...");
 		}
 	}
-  
+
   scanner_reset(&scanner);
   /* Second pass */
 
@@ -197,6 +210,13 @@ int
 main(int argc, char *const argv[])
 {
   int idx;
+  char *no_color;
+
+  no_color = getenv("NO_COLOR");
+  if (no_color != NULL && no_color[0] != '\0')
+	{
+	  colorize = 0;
+	}
 
 #ifndef _WIN32
   prg_name = basename(argv[0]);
@@ -207,8 +227,7 @@ main(int argc, char *const argv[])
   idx++; /* skip argv[0] :) */
   if (idx >= argc)
 	{
-	  fprintf(stderr, "%s: fatal error: no input files\n", prg_name);
-	  return (EXIT_FAILURE);
+	  error_fatal("no input files");
 	}
 
   compile_files(argc - idx, argv + idx);
