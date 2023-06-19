@@ -30,52 +30,89 @@
  */
 
 #include <stdlib.h>
-#include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
-#include "plsc.h"
-#include "token.h"
-#include "term.h"
+#include <errno.h>
+#include "scanner.h"
+#include "json.h"
 
-void
-error_fatal(char const *fmt, ...)
+static JSONObj *
+token_position_to_json(Token *tok)
 {
-  va_list args;
+  JSONObj *obj;
 
-  va_start(args, fmt);
-  term_text_bold(stderr);
-  fprintf(stderr, "%s: ", prg_name);
-  term_color_reset(stderr);
-  term_color_red(stderr);
-  fprintf(stderr, "fatal error: ");
-  term_color_reset(stderr);
-  vfprintf(stderr, fmt, args);
-  fprintf(stderr, "\n");
-  va_end(args);
+  obj = json_obj_new();
+  json_add_to_obj(obj, "column", json_number_new(tok->col));
+  json_add_to_obj(obj, "line", json_number_new(tok->line));
+  json_add_to_obj(obj, "length", json_number_new(tok->length));
 
-  exit(EXIT_FAILURE);
+  return (obj);
+}
+
+static JSONObj *
+error_token_to_json(Token *tok)
+{
+  JSONObj *obj;
+
+  obj = json_obj_new();
+  json_add_to_obj(obj, "position", token_position_to_json(tok));
+
+  return (obj);
+}
+
+static JSONObj *
+token_to_json(Token *tok)
+{
+  JSONObj *obj;
+
+  obj = json_obj_new();
+  json_add_to_obj(obj, "type", json_string_new(token_to_str(tok->token)));
+  if (tok->token == T_IDENT)
+	{
+	  json_add_to_obj(obj, "value", json_string_new(tok->value.strval));
+	}
+  json_add_to_obj(obj, "position", token_position_to_json(tok));
+
+  return (obj);
 }
 
 void
-error_tok(Token *tok)
+dump_tokens(char const *file)
 {
-  term_text_bold(stderr);
-  fprintf(stderr, "%s:%lu:%lu: ", tok->file, (unsigned long)tok->line,
-		  (unsigned long)tok->col);
-  term_color_reset(stderr);
-  term_color_red(stderr);
-  fprintf(stderr, "error: ");
-  term_color_reset(stderr);
+  FILE *fp;
+  Scanner scanner;
+  Token tok;
+  JSONObj *obj;
+  JSONObj *tok_array;
+  JSONObj *err_array;
 
-  fprintf(stderr, " stray ");
-  term_text_bold(stderr);
-  fprintf(stderr, "'%c' ", (char)tok->value.intval);
-  term_color_reset(stderr);
-  fprintf(stderr, "in program\n");
-  fprintf(stderr, " %5lu | %s\n", (unsigned long)tok->line, tok->linebuffer);
-  fprintf(stderr, "       | ");
+  fp = fopen(file, "r");
+  if (fp == NULL)
+	{
+	  error_fatal("%s: %s", file, strerror(errno));
+	}
 
-  term_color_red(stderr);
-  fprintf(stderr, "%*c\n", (int)tok->col, '^');
-  term_color_reset(stderr);
+  scanner = scanner_init(fp, file);
+
+  obj = json_obj_new();
+  tok_array = json_array_new();
+  err_array = json_array_new();
+
+  while (scanner_scan(&scanner, &tok) != 0)
+	{
+	  if (tok.token == T_ERROR)
+		{
+		  json_add_to_array(err_array, error_token_to_json(&tok));
+		}
+	  else
+		{
+		  json_add_to_array(tok_array, token_to_json(&tok));
+		}
+	}
+
+  json_add_to_obj(obj, "file", json_string_new(file));
+  json_add_to_obj(obj, "tokens", tok_array);
+  json_add_to_obj(obj, "errors", err_array);
+  json_print(obj);
+  json_free(obj);
 }

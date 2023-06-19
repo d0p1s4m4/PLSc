@@ -38,6 +38,7 @@
 #endif /* !_WIN32 */
 #include "scanner.h"
 #include "term.h"
+#include "dump.h"
 
 # define OPTARG_LONG_SEP_BASE "--"
 # define OPTARG_SHORT_SEP_BASE "-"
@@ -87,6 +88,7 @@
 
 char const *prg_name;
 int colorize = 1;
+int dump_token = 0;
 
 void
 show_usage(int retval)
@@ -141,6 +143,10 @@ parse_flags(int argc, char *const argv[])
 	  else if (IS_OPTARG_LONG(argv[idx], "no-color"))
 		{
 		  colorize = 0;
+		}
+	  else if (IS_OPTARG_LONG(argv[idx], "dump-token"))
+		{
+		  dump_token = 1;
 		}
 	  else if (IS_NOT_OPTARG(argv[idx]))
 		{
@@ -200,7 +206,14 @@ compile_files(int argc, char *const argv[])
 
   for (idx = 0; idx < argc; idx++)
 	{
-	  compile_single_file(argv[idx]);
+	  if (dump_token)
+		{
+		  dump_tokens(argv[idx]);
+		}
+	  else
+		{
+		  compile_single_file(argv[idx]);
+		}
 	}
 
   return (0);
@@ -217,7 +230,6 @@ main(int argc, char *const argv[])
 	{
 	  colorize = 0;
 	}
-
 #ifndef _WIN32
   prg_name = basename(argv[0]);
 #else /* !_WIN32 */
@@ -231,6 +243,5 @@ main(int argc, char *const argv[])
 	}
 
   compile_files(argc - idx, argv + idx);
-
   return (EXIT_SUCCESS);
 }

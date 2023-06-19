@@ -29,24 +29,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef ERROR_H
-# define ERROR_H
-
-# include <stdarg.h>
-
-struct token;
+#ifndef JSON_H
+# define JSON_H 1
 
 typedef enum
-  {
-	E_STRAY,
-	E_COMMENT_EOF,
-	E_STR_EOF,
+{
+  JSON_OBJECT,
+  JSON_ARRAY,
+  JSON_STRING,
+  JSON_NUMBER
+} JSONType;
 
-	E_UNKNOWN
-  } Error;
+typedef struct json_obj
+{
+  struct json_obj *next;
+  struct json_obj *child;
 
-void error_fatal(char const *fmt, ...);
-void error_tok(struct token *tok);
+  JSONType type;
+  char const *key;
+  int num;
+  char *str;
+} JSONObj;
 
-#endif /* !ERROR_H */
+JSONObj *json_obj_new(void);
+JSONObj *json_array_new(void);
+JSONObj *json_string_new(char const *str);
+JSONObj *json_number_new(int num);
 
+void json_add_to_obj(JSONObj *obj, char const *key, JSONObj *item);
+void json_add_to_array(JSONObj *array, JSONObj *item);
+
+void json_free(JSONObj *obj);
+
+void json_print(JSONObj *obj);
+
+#endif /* !JSON_H */

@@ -29,24 +29,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef ERROR_H
-# define ERROR_H
+#ifndef DUMP_H
+# define DUMP_H 1
 
-# include <stdarg.h>
+void dump_tokens(char *const file);
 
-struct token;
-
-typedef enum
-  {
-	E_STRAY,
-	E_COMMENT_EOF,
-	E_STR_EOF,
-
-	E_UNKNOWN
-  } Error;
-
-void error_fatal(char const *fmt, ...);
-void error_tok(struct token *tok);
-
-#endif /* !ERROR_H */
-
+#endif /* !DUMP_H */

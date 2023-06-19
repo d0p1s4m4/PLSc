@@ -17,7 +17,7 @@ CFLAGS	+= -Wall -Werror -Wextra -ansi -pedantic
 TARGET	= plsc
 endif
 
-SRCS	= main.c scanner.c token.c term.c error.c
+SRCS	= main.c scanner.c token.c term.c error.c json.c dump.c
 OBJS	= $(addprefix src/, $(SRCS:.c=.obj))
 ifeq ($(OS),Windows_NT)
 DELOBJS	= $(addprefix src\, $(SRCS:.c=.obj))
