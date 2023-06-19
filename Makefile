@@ -7,6 +7,7 @@ CC	?= gcc
 LD	:= $(CC)
 RM	:= rm -f
 endif
+PYTHON := python3
 
 ifeq ($(OS),Windows_NT)
 CFLAGS	+= /TC /Wall /WX /wd5045 /wd4820 /Za /D_CRT_SECURE_NO_WARNINGS
@@ -51,6 +52,10 @@ ifeq ($(OS),Windows_NT)
 else
 	$(CC) -o $@ -c $< $(CFLAGS)
 endif
+
+.PHONY: test
+test: $(TARGET)
+	@ $(PYTHON) test/runner.py test
 
 .PHONY: clean
 clean:
