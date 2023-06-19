@@ -42,9 +42,9 @@ token_position_to_json(Token *tok)
   JSONObj *obj;
 
   obj = json_obj_new();
-  json_add_to_obj(obj, "column", json_number_new(tok->col));
-  json_add_to_obj(obj, "line", json_number_new(tok->line));
-  json_add_to_obj(obj, "length", json_number_new(tok->length));
+  json_add_to_obj(obj, "column", json_number_new((int)tok->col));
+  json_add_to_obj(obj, "line", json_number_new((int)tok->line));
+  json_add_to_obj(obj, "length", json_number_new((int)tok->length));
 
   return (obj);
 }
