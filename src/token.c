@@ -48,14 +48,25 @@ static char *token_str[] = {
   "NUMBER", "CHAR", "STRING",
   "IDENTIFIER",
   "PROCEDURE",
-  "ENTRY",
+  "FUNCTION",
+  "STRUCT",
+  "CLASS",
   "DECLARE",
-  "DO",
+  "BEGIN",
   "END",
+  "DO",
+  "FOR",
+  "WHILE",
+  "LOOP",
 };
 
 const char *
 token_to_str(TokenType type)
 {
-  return (token_str[type]);
+  if (type < T_EOF)
+  {
+    return (token_str[type]);
+  }
+
+  return ("???");
 }

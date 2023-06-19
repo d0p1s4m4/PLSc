@@ -1,0 +1,73 @@
+{
+    "file": "test/02-empty-proc.input",
+    "tokens": [
+        {
+            "type":"IDENTIFIER",
+            "value": "empty",
+            "position": {
+                "column": 1,
+                "line": 1,
+                "length": 5
+            }
+        },
+        {
+            "type": ":",
+            "position": {
+                "column": 6,
+                "line": 1,
+                "length": 1
+            }
+        },
+        {
+            "type": "PROCEDURE",
+            "position": {
+                "column": 8,
+                "line": 1,
+                "length": 4
+            }
+        },
+        {
+            "type": "(",
+            "position": {
+                "column": 12,
+                "line": 1,
+                "length": 1
+            }
+        },
+        {
+            "type": ")",
+            "position": {
+                "column": 13,
+                "line": 1,
+                "length": 1
+            }
+        },
+        {
+            "type" : ";",
+            "position": {
+                "column": 14,
+                "line": 1,
+                "length": 1
+            }
+        },
+        {
+            "type": "END",
+            "position": {
+                "column": 1,
+                "line": 2,
+                "length": 3
+            }
+        },
+        {
+            "type": ";",
+            "position": {
+                "column": 4,
+                "line": 2,
+                "length": 1
+            }
+        }
+    ],
+    "errors": [
+
+    ]
+}

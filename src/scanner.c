@@ -36,6 +36,7 @@
 #include "scanner.h"
 #include "term.h"
 #include "token.h"
+#include "keyword.h"
 
 static int
 next(Scanner *scanner)
@@ -119,6 +120,26 @@ comment(Scanner *scanner)
 }
 
 static int
+string(Scanner *scanner, Token *tok)
+{
+  int c;
+  int idx;
+
+  idx = 0;
+  c = next(scanner);
+  while (c != '"')
+	{
+	  scanner->buffer[idx++] = (char)c;
+	  c = next(scanner);
+	}
+  scanner->buffer[idx] = '\0';
+  tok->value.strval = scanner->buffer;
+  tok->length = idx + 2;
+
+  return (1);
+}
+
+static int
 number(Scanner *scanner, Token *tok)
 {
   int c;
@@ -148,6 +169,21 @@ number(Scanner *scanner, Token *tok)
   return (1);
 }
 
+static void
+keyword(Scanner *scanner, Token *tok)
+{
+  int idx;
+
+  for (idx = 0; keywords[idx].str != NULL; idx++)
+	{
+	  if (strcmp(scanner->buffer, keywords[idx].str) == 0)
+		{
+		  tok->token = keywords[idx].token;
+		  return;
+		}
+	}
+}
+
 static int
 ident(Scanner *scanner, Token *tok)
 {
@@ -175,6 +211,7 @@ ident(Scanner *scanner, Token *tok)
   tok->length = idx;
   tok->value.strval = scanner->buffer;
 
+  keyword(scanner, tok);
   return (1);
 }
 
@@ -390,6 +427,7 @@ scanner_scan(Scanner *scanner, Token *tok)
 
 	case '"':
 	  tok->token = T_STRING;
+	  return (string(scanner, tok));
 	  break;
 
 	default:

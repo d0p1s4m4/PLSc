@@ -95,12 +95,17 @@ typedef enum {
   T_IDENT,
 
   /* keyword */
-  T_PROC,
-  T_ENTRY,
-  T_DCL,
-  T_DO,
+  T_PROCEDURE,
+  T_FUNCTION,
+  T_STRUCT,
+  T_CLASS,
+  T_DECLARE,
+  T_BEGIN,
   T_END,
-
+  T_DO,
+  T_FOR,
+  T_WHILE,
+  T_LOOP,
   T_EOF,
   T_ERROR,
   T_MAX
@@ -122,7 +127,7 @@ typedef struct token {
   union value
   {
 	unsigned uintval;
-    int intval;
+	int intval;
 	char *strval;
   } value;
 } Token;

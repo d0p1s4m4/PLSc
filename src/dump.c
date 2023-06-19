@@ -67,7 +67,7 @@ token_to_json(Token *tok)
 
   obj = json_obj_new();
   json_add_to_obj(obj, "type", json_string_new(token_to_str(tok->token)));
-  if (tok->token == T_IDENT)
+  if (tok->token == T_IDENT || tok->token == T_STRING)
 	{
 	  json_add_to_obj(obj, "value", json_string_new(tok->value.strval));
 	}
