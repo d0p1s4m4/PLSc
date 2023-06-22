@@ -35,6 +35,7 @@
 #include <errno.h>
 #include "scanner.h"
 #include "json.h"
+#include "token.h"
 
 static JSONObj *
 token_position_to_json(Token *tok)
@@ -67,7 +68,7 @@ token_to_json(Token *tok)
 
   obj = json_obj_new();
   json_add_to_obj(obj, "type", json_string_new(token_to_str(tok->token)));
-  if (tok->token == T_IDENT || tok->token == T_STRING)
+  if (tok->token == T_IDENT || tok->token == T_STRING || tok->token == T_NUMBER)
 	{
 	  json_add_to_obj(obj, "value", json_string_new(tok->value.strval));
 	}

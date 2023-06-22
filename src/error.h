@@ -41,7 +41,7 @@ typedef enum
 	E_STRAY,
 	E_COMMENT_EOF,
 	E_STR_EOF,
-
+	E_NUMBER_SUFFIX,
 	E_UNKNOWN
   } Error;
 

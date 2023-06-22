@@ -119,6 +119,7 @@ typedef struct token {
   size_t line;
   size_t col;
   Error error;
+  char *error_str;
 
   char const *file;
   char *linebuffer;

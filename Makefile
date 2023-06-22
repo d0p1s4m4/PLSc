@@ -18,7 +18,8 @@ CFLAGS	+= -Wall -Werror -Wextra -ansi -pedantic
 TARGET	= plsc
 endif
 
-SRCS	= main.c scanner.c token.c term.c error.c json.c dump.c keyword.c
+SRCS	= main.c scanner.c token.c term.c error.c json.c dump.c keyword.c \
+	parser.c
 OBJS	= $(addprefix src/, $(SRCS:.c=.obj))
 ifeq ($(OS),Windows_NT)
 DELOBJS	= $(addprefix src\, $(SRCS:.c=.obj))
@@ -54,6 +55,8 @@ else
 endif
 
 .PHONY: test
+test: CFLAGS += --coverage
+test: LDFLAGS += --coverage
 test: $(TARGET)
 	@ $(PYTHON) test/runner.py test
 

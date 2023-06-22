@@ -37,6 +37,7 @@
 # include <libgen.h>
 #endif /* !_WIN32 */
 #include "scanner.h"
+#include "parser.h"
 #include "term.h"
 #include "dump.h"
 
@@ -87,6 +88,7 @@
 											   _h "\n")
 
 char const *prg_name;
+char const *out = NULL;
 int colorize = 1;
 int dump_token = 0;
 
@@ -139,6 +141,15 @@ parse_flags(int argc, char *const argv[])
 		}
 	  else if (IS_OPTARG(argv[idx], "o", "out"))
 		{
+		  idx++;
+		  if (IS_NOT_OPTARG(argv[idx]))
+			{
+			  out = argv[idx];
+			}
+		  else
+			{
+			  show_usage(EXIT_FAILURE);
+			}
 		}
 	  else if (IS_OPTARG_LONG(argv[idx], "no-color"))
 		{
@@ -165,8 +176,8 @@ int
 compile_single_file(char const *file)
 {
   Scanner scanner;
-  Token tok;
-  int err_count;
+  Parser parser;
+
   FILE *fp;
 
   fp = fopen(file, "r");
@@ -174,28 +185,16 @@ compile_single_file(char const *file)
 	{
 	  error_fatal("%s: %s", file, strerror(errno));
 	}
-
-  err_count = 0;
   scanner = scanner_init(fp, file);
-  /* First pass */
-  while (scanner_scan(&scanner, &tok) != 0)
-	{
-	  if (tok.token == T_ERROR)
-		{
-		  error_tok(&tok);
-		  err_count++;
-		}
+  parser = parser_init(&scanner);
 
-	  if (err_count > 10)
-		{
-		  error_fatal("too many error, aborting...");
-		}
-	}
-
-  scanner_reset(&scanner);
-  /* Second pass */
-
+  parser_parse(&parser);
   fclose(fp);
+
+  if (parser.error_count > 0)
+	{
+	  exit(EXIT_FAILURE);
+	}
   return (0);
 }
 

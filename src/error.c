@@ -56,9 +56,31 @@ error_fatal(char const *fmt, ...)
   exit(EXIT_FAILURE);
 }
 
+static void
+stray_char(Token *tok)
+{
+  fprintf(stderr, "stray ");
+  term_text_bold(stderr);
+  fprintf(stderr, "'%c' ", (char)tok->value.intval);
+  term_color_reset(stderr);
+  fprintf(stderr, "in program\n");
+}
+
+static void
+number_suffix(Token *tok)
+{
+  fprintf(stderr, "invalid suffix ");
+  term_text_bold(stderr);
+  fprintf(stderr, "\"%s\" ", tok->error_str);
+  term_color_reset(stderr);
+  fprintf(stderr, "on integer constant\n");
+}
+
 void
 error_tok(Token *tok)
 {
+  int idx;
+
   term_text_bold(stderr);
   fprintf(stderr, "%s:%lu:%lu: ", tok->file, (unsigned long)tok->line,
 		  (unsigned long)tok->col);
@@ -67,15 +89,28 @@ error_tok(Token *tok)
   fprintf(stderr, "error: ");
   term_color_reset(stderr);
 
-  fprintf(stderr, " stray ");
-  term_text_bold(stderr);
-  fprintf(stderr, "'%c' ", (char)tok->value.intval);
-  term_color_reset(stderr);
-  fprintf(stderr, "in program\n");
+  switch (tok->error)
+	{
+	case E_STRAY:
+	  stray_char(tok);
+	  break;
+	case E_NUMBER_SUFFIX:
+	  number_suffix(tok);
+	  break;
+	default:
+	  error_fatal("unknown error ");
+	  break;
+	}
+
   fprintf(stderr, " %5lu | %s\n", (unsigned long)tok->line, tok->linebuffer);
   fprintf(stderr, "       | ");
 
   term_color_red(stderr);
-  fprintf(stderr, "%*c\n", (int)tok->col, '^');
+  fprintf(stderr, "%*c", (int)tok->col, '^');
+  for (idx = 1; idx < (int)tok->length; idx++)
+	{
+	  fprintf(stderr, "~");
+	}
+  fprintf(stderr, "\n");
   term_color_reset(stderr);
 }

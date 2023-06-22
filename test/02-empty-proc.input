@@ -1,2 +1,2 @@
-empty: PROC();
+PROC empty;
 END;

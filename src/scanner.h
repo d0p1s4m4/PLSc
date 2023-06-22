@@ -44,7 +44,7 @@ typedef struct
 {
   FILE *fd;
   char const *file;
-  
+
   size_t line;
   size_t col;
 
@@ -52,7 +52,7 @@ typedef struct
 
   /* for error reporting */
   char linebuffer[SCAN_BUFFER];
- 
+
 } Scanner;
 
 Scanner scanner_init(FILE *stream, char const *file);

@@ -142,30 +142,73 @@ string(Scanner *scanner, Token *tok)
 static int
 number(Scanner *scanner, Token *tok)
 {
+  static char alphabet[] = "0123456789abcdef";
+  char *ptr;
+  char *found;
+  int idx;
+  int base;
   int c;
 
+  idx = 0;
   c = next(scanner);
-  if (c == '0')
+  while (isalnum(c))
 	{
+	  scanner->buffer[idx++] = tolower(c);
 	  c = next(scanner);
-	  switch (c)
+	}
+  scanner->buffer[idx] = 0;
+  tok->length = idx;
+  tok->value.strval = scanner->buffer;
+  back(scanner, c);
+
+  ptr = scanner->buffer;
+  base = 10;
+  if (scanner->buffer[0] == '0' && isalpha(scanner->buffer[1]))
+	{
+	  switch (scanner->buffer[1])
 		{
 		case 'b':
+		  base = 2;
+		  ptr = ptr + 2;
 		  break;
-
 		case 'o':
+		  base = 8;
+		  ptr = ptr + 2;
 		  break;
-
 		case 'x':
+		  base = 16;
+		  ptr = ptr + 2;
 		  break;
-
 		default:
-		  back(scanner, c);
-		  break;
+		  tok->token = T_ERROR;
+		  tok->error = E_NUMBER_SUFFIX;
+		  tok->error_str = ptr + 1;
+		  return (1);
 		}
 	}
-  (void)tok;
-
+  /* validate number according to base */
+  while (*ptr != '\0')
+	{
+	  found = strchr(alphabet, *ptr);
+	  if (found)
+		{
+		  if ((int)(found - alphabet) >= base)
+			{
+			  tok->token = T_ERROR;
+			  tok->error = E_NUMBER_SUFFIX;
+			  tok->error_str = ptr;
+			  return (1);
+			}
+		}
+	  else
+		{
+		  tok->token = T_ERROR;
+		  tok->error = E_NUMBER_SUFFIX;
+		  tok->error_str = ptr;
+		  return (1);
+		}
+	  ptr++;
+	}
   return (1);
 }
 
@@ -440,6 +483,7 @@ scanner_scan(Scanner *scanner, Token *tok)
 	  else if (isdigit(c))
 		{
 		  back(scanner, c);
+		  tok->token = T_NUMBER;
 		  return (number(scanner, tok));
 		}
 	  else
