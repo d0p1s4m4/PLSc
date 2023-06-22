@@ -153,7 +153,7 @@ number(Scanner *scanner, Token *tok)
   c = next(scanner);
   while (isalnum(c))
 	{
-	  scanner->buffer[idx++] = tolower(c);
+	  scanner->buffer[idx++] = (char)tolower(c);
 	  c = next(scanner);
 	}
   scanner->buffer[idx] = 0;

@@ -3,6 +3,9 @@
 # PL/Stupid Compiler
 
 ![GitHub](https://img.shields.io/github/license/d0p1s4m4/PLSc?logo=opensourceinitiative&style=flat-square)
+[![Codecov](https://img.shields.io/codecov/c/gh/d0p1s4m4/PLSc?style=flat-square&logo=codecov&logoColor=codecov)](https://codecov.io/gh/d0p1s4m4/PLSc)
+![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/d0p1s4m4/PLSc/ci.yml?style=flat-square)
+
 
 </div>
 
@@ -18,6 +21,7 @@
 
 **Optionals**:
 - Inno Setup (:window: only)
+- Python (:test_tube:)
 
 ### On UNIX-like OSes:
 
