@@ -16,7 +16,7 @@ ifdef cc_msvc
 CFLAGS	+= /TC /Wall /WX /wd5045 /wd4820 /Za /D_CRT_SECURE_NO_WARNINGS \
 			/DVERSION=$(VERSION_STR)
 else
-CFLAGS	+= -Wall -Werror -Wextra -DVERSION=$(VERSION_STR)
+CFLAGS	+= -Wall -Werror -Wextra -DVERSION="$(VERSION_STR)"
 ifdef cc_clang_gcc
 CFLAGS	+= -ansi -pedantic
 endif

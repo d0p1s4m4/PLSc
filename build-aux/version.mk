@@ -7,12 +7,15 @@ endif
 
 git_commit := $(shell git rev-parse --short HEAD)
 
-git_status := $(shell git status)
-
 VERSION := $(git_tag)-$(git_commit)
 
+ifneq ($(OS),Windows_NT)
+
+git_status := $(shell git status)
 ifneq ($(git_status),)
 VERSION	+= (dirty)
 endif
 
-VERSION_STR :="\"$(VERSION)\""
+endif
+
+VERSION_STR :=\"$(VERSION)\"
