@@ -9,12 +9,24 @@ RM	:= rm -f
 endif
 PYTHON := python3
 
-ifeq ($(OS),Windows_NT)
+include build-aux/toolchain.mk
+
+ifdef cc_msvc
 CFLAGS	+= /TC /Wall /WX /wd5045 /wd4820 /Za /D_CRT_SECURE_NO_WARNINGS
+else
+CFLAGS	+= -Wall -Werror -Wextra
+ifdef cc_clang_gcc
+CFLAGS	+= -ansi -pedantic
+endif
+endif
+
+ifdef ld_msvc
 LDFLAGS	+= /SUBSYSTEM:CONSOLE
+endif
+
+ifeq ($(OS),Windows_NT)
 TARGET	= plsc.exe
 else
-CFLAGS	+= -Wall -Werror -Wextra -ansi -pedantic
 TARGET	= plsc
 endif
 
@@ -31,7 +43,7 @@ endif
 all: $(TARGET)
 
 .PHONY: debug
-ifeq ($(OS),Windows_NT)
+ifdef cc_msvc
 debug: CFLAGS += /DEBUG /fsanitize=address
 debug: LDFLAGS += /DEBUG
 else
@@ -41,14 +53,14 @@ endif
 debug: $(TARGET)
 
 $(TARGET): $(OBJS)
-ifeq ($(OS),Windows_NT)
+ifdef ld_msvc
 	$(LD) /OUT:$@ $^ $(LDFLAGS)
 else
 	$(LD) -o $@ $^ $(LDFLAGS)
 endif
 
 %.obj: %.c
-ifeq ($(OS),Windows_NT)
+ifdef cc_msvc
 	$(CC) /Fo:$@ /c $< $(CFLAGS)
 else
 	$(CC) -o $@ -c $< $(CFLAGS)
@@ -58,6 +70,10 @@ endif
 test: CFLAGS += --coverage
 test: LDFLAGS += --coverage
 test: $(TARGET)
+	@ $(PYTHON) test/runner.py test
+
+.PHONY: check
+check: $(TARGET)
 	@ $(PYTHON) test/runner.py test
 
 .PHONY: clean
