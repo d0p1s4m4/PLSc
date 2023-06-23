@@ -114,7 +114,7 @@ show_usage(int retval)
 void
 show_version(void)
 {
-  printf("%s v0.0\n", prg_name);
+  printf("%s " VERSION "\n", prg_name);
   printf("Copyright (C) 2023 d0p1\n");
   printf("License BSD-3-Clause: <https://directory.fsf.org/wiki/License:BSD-3-Clause>\n");
   printf("This is free software: you are free to change and redistribute it.\n");
