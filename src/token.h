@@ -118,8 +118,8 @@ typedef struct token {
   size_t length;
   size_t line;
   size_t col;
+
   Error error;
-  char *error_str;
 
   char const *file;
   char *linebuffer;
@@ -132,6 +132,13 @@ typedef struct token {
 	char *strval;
   } value;
 } Token;
+
+# define TOKEN_ERROR(_err_tok, _err_type, _err_c, _err_str) do {	\
+	_err_tok->token = T_ERROR;										\
+	_err_tok->error.type = _err_type;								\
+	_err_tok->error.c = _err_c;										\
+	_err_tok->error.str = _err_str;									\
+  } while (0)
 
 const char *token_to_str(TokenType type);
 

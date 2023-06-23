@@ -61,7 +61,7 @@ stray_char(Token *tok)
 {
   fprintf(stderr, "stray ");
   term_text_bold(stderr);
-  fprintf(stderr, "'%c' ", (char)tok->value.intval);
+  fprintf(stderr, "'%c' ", (char)tok->error.c);
   term_color_reset(stderr);
   fprintf(stderr, "in program\n");
 }
@@ -71,7 +71,7 @@ number_suffix(Token *tok)
 {
   fprintf(stderr, "invalid suffix ");
   term_text_bold(stderr);
-  fprintf(stderr, "\"%s\" ", tok->error_str);
+  fprintf(stderr, "\"%s\" ", tok->error.str);
   term_color_reset(stderr);
   fprintf(stderr, "on integer constant\n");
 }
@@ -89,7 +89,7 @@ error_tok(Token *tok)
   fprintf(stderr, "error: ");
   term_color_reset(stderr);
 
-  switch (tok->error)
+  switch (tok->error.type)
 	{
 	case E_STRAY:
 	  stray_char(tok);

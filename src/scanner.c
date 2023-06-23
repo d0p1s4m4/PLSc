@@ -180,9 +180,7 @@ number(Scanner *scanner, Token *tok)
 		  ptr = ptr + 2;
 		  break;
 		default:
-		  tok->token = T_ERROR;
-		  tok->error = E_NUMBER_SUFFIX;
-		  tok->error_str = ptr + 1;
+		  TOKEN_ERROR(tok, E_NUMBER_SUFFIX, 0, ptr + 1);
 		  return (1);
 		}
 	}
@@ -194,17 +192,13 @@ number(Scanner *scanner, Token *tok)
 		{
 		  if ((int)(found - alphabet) >= base)
 			{
-			  tok->token = T_ERROR;
-			  tok->error = E_NUMBER_SUFFIX;
-			  tok->error_str = ptr;
+			  TOKEN_ERROR(tok, E_NUMBER_SUFFIX, 0, ptr);
 			  return (1);
 			}
 		}
 	  else
 		{
-		  tok->token = T_ERROR;
-		  tok->error = E_NUMBER_SUFFIX;
-		  tok->error_str = ptr;
+		  TOKEN_ERROR(tok, E_NUMBER_SUFFIX, 0, ptr);
 		  return (1);
 		}
 	  ptr++;
@@ -488,9 +482,7 @@ scanner_scan(Scanner *scanner, Token *tok)
 		}
 	  else
 		{
-		  tok->token = T_ERROR;
-		  tok->error = E_STRAY;
-		  tok->value.intval = c;
+		  TOKEN_ERROR(tok, E_STRAY, c, NULL);
 		}
 	  break;
 	}

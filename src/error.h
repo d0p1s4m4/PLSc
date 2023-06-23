@@ -43,7 +43,15 @@ typedef enum
 	E_STR_EOF,
 	E_NUMBER_SUFFIX,
 	E_UNKNOWN
-  } Error;
+  } ErrorType;
+
+typedef struct
+{
+  ErrorType type;
+
+  int c;
+  char *str;
+} Error;
 
 void error_fatal(char const *fmt, ...);
 void error_tok(struct token *tok);

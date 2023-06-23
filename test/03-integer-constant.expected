@@ -1,0 +1,50 @@
+{
+  "file": "test/03-integer-constant.input",
+  "tokens": [
+    {
+      "type": "NUMBER",
+      "value": "123",
+      "position": {
+        "column": 1,
+        "line": 1,
+        "length": 3
+      }
+    },
+    {
+      "type": "NUMBER",
+      "value": "0xfff",
+      "position": {
+        "column": 5,
+        "line": 1,
+        "length": 5
+      }
+    },
+    {
+      "type": "NUMBER",
+      "value": "0b010101",
+      "position": {
+        "column": 23,
+        "line": 1,
+        "length": 8
+      }
+    }
+  ],
+  "errors": [
+    {
+      "type": 3,
+      "position": {
+        "column": 11,
+        "line": 1,
+        "length": 11
+      }
+    },
+    {
+      "type": 3,
+      "position": {
+        "column": 32,
+        "line": 1,
+        "length": 4
+      }
+    }
+  ]
+}

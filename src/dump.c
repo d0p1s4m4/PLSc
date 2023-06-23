@@ -56,8 +56,8 @@ error_token_to_json(Token *tok)
   JSONObj *obj;
 
   obj = json_obj_new();
+  json_add_to_obj(obj, "type", json_number_new(tok->error.type));
   json_add_to_obj(obj, "position", token_position_to_json(tok));
-
   return (obj);
 }
 
