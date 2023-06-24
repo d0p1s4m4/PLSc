@@ -1,0 +1,89 @@
+#+title: Lexical Structure
+#+Author: d0p1
+
+* Lexical Structure
+
+** Whitespace & Comments
+
+Whitespace are ignored.
+
+Comments are anythings between ~/*~ and ~*/~.
+
+#+NAME: whitespace.bnf
+#+BEGIN_SRC bnf
+<whitespace> ::= <blank>
+             | <blank> <whitespace>
+<blank> ::= " " | "\t" | "\r" | "\n" | <comment>
+<comment> ::= "/*" anything "*/"
+#+END_SRC
+
+** Identifiers
+
+Identifiers begin with and upptercase or lowercaser letter (~[a-zA_Z]~) or an
+underscore (~_~). After the first character identifiers can contains digits
+(~[0-9]~). An identifier must match the following regular expression:
+~[a-zA-Z_][a-zA-Z0-9_]*~)
+
+#+NAME: identifiers.bnf
+#+BEGIN_SRC bnf
+<identifier> ::= ([a-z] | [A-Z] | "_") ([a-z] | [A-Z] | [0-9] | "_")*
+#+END_SRC
+
+** Keywords & Punctuation
+
+Keywords are reserved words and can't be used as identifiers.
+They are always uppercase.
+
+- Keywords used in declarations: ~AS~, ~CLASS~, ~DCL~, ~DECLARE~, ~ENUM~,
+  ~EXTERN~, ~FUNC~, ~FUNCTION~, ~PROC~, ~PROCEDURE~, ~STRUCT~
+
+- Keywords used in statements: ~IF~, ~ELSE~, ~ELIF~, ~RETURN~
+
+** Literals
+
+#+NAME: literals_sample
+#+BEGIN_SRC pls
+/* Integer literals */
+1337  /* base 10 */
+0xFF  /* base 16 a/k/a hexadecimal */
+0o777 /* base 8 a/k/a octal */
+0b101 /* base 2 a/k/a binary */
+
+/* Floating-point literal */
+/* XXX: TODO but it's a non goal for now */
+
+/* String literals */
+"Workers of the world, unite!" /* null terminated string */
+@"You have noting to lose but your chains" /* a String object */
+
+/* Boolean literals */
+/* XXX: TODO */
+
+/* XXX: nil/null literals ? */
+
+/* Regex literals */
+/* XXX: TODO like Floating-point it's a non goal for now
+ * but aving something like in perl could be realy cool
+ */
+
+#+END_SRC
+
+*** Integer Literals
+
+#+BEGIN_SRC bnf
+<interger> ::= <prefix>? [0-9] [0-9]*
+<prefix> ::= "0" ("x" | "o" | "b" )
+#+END_SRC
+
+*** String Literals
+
+escapte sequences:
+- Nul character ~\0~
+- Tabulation ~\t~
+- Line feed ~\n~
+- Carriage return ~\r~
+- Double quotation mark ~\"~
+- Backslash ~\\~
+
+** Operators
+
