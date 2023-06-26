@@ -1,8 +1,6 @@
 #+title: Lexical Structure
 #+Author: d0p1
 
-* Lexical Structure
-
 ** Whitespace & Comments
 
 Whitespace are ignored.
@@ -57,7 +55,8 @@ They are always uppercase.
 @"You have noting to lose but your chains" /* a String object */
 
 /* Boolean literals */
-/* XXX: TODO */
+TRUE
+FALSE
 
 /* XXX: nil/null literals ? */
 
@@ -75,15 +74,39 @@ They are always uppercase.
 <prefix> ::= "0" ("x" | "o" | "b" )
 #+END_SRC
 
+*** Boolean Literals
+
+#+BEGIN_SRC bnf
+<boolean> ::= "TRUE" | "FALSE"
+#+END_SRC
+
 *** String Literals
 
 escapte sequences:
-- Nul character ~\0~
+- Null character ~\0~
 - Tabulation ~\t~
 - Line feed ~\n~
 - Carriage return ~\r~
-- Double quotation mark ~\"~
+- Double quotation mark ~\\"~
 - Backslash ~\\~
 
 ** Operators
+
+*** Assignement Operator
+
+=
+
+*** Arithmetic Operators
+
+- Addition: ~+~
+- Substraction: ~-~
+- Multiplication: ~-~
+- Division: ~/~
+
+*** Remainder Operator
+
+~%~
+
+*** Comparison Operators
+
 

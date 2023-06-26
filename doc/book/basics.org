@@ -1,0 +1,15 @@
+#+title: The Basics
+#+author: d0p1
+
+** Constants and Variables
+
+#+BEGIN_SRC pls
+  DECLARE x AS INTEGER;
+  x = 123;
+#+END_SRC
+
+** Comments
+
+#+BEGIN_SRC pls
+  /* This is a comment */
+#+END_SRC
