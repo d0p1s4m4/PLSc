@@ -459,6 +459,10 @@ scanner_scan(Scanner *scanner, Token *tok)
 		}
 	  break;
 
+	case '!':
+	  tok->token = T_EQUAL; /* XXX: fixme */
+	  break;
+
 	case '\'':
 	  break;
 

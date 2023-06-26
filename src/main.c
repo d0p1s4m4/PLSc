@@ -40,6 +40,7 @@
 #include "parser.h"
 #include "term.h"
 #include "dump.h"
+#include "cgen.h"
 
 # define OPTARG_LONG_SEP_BASE "--"
 # define OPTARG_SHORT_SEP_BASE "-"
@@ -89,6 +90,7 @@
 
 char const *prg_name;
 char const *out = NULL;
+char const *target_backend = "nasm";
 int colorize = 1;
 int dump_token = 0;
 
@@ -99,6 +101,7 @@ show_usage(int retval)
   printf("Transpile PL/Stupid source file to Assembly\n\n");
 
   OPTARG_HELP_VAL("o", "out", "FILE", "output file.");
+  OPTARG_HELP_VAL("t", "target", "TARGET", "output target. (default: nasm)");
   OPTARG_LONG_HELP("no-color", "turn off colored output.");
   OPTARG_LONG_HELP("dump-token", "output tokens as json and exit.");
   OPTARG_LONG_HELP("dump-ast", "output AST as json and exit.");
@@ -158,6 +161,18 @@ parse_flags(int argc, char *const argv[])
 	  else if (IS_OPTARG_LONG(argv[idx], "dump-token"))
 		{
 		  dump_token = 1;
+		}
+	  else if (IS_OPTARG(argv[idx], "t", "target"))
+		{
+		  idx++;
+		  if (IS_NOT_OPTARG(argv[idx]))
+			{
+			  target_backend = argv[idx];
+			}
+		  else
+			{
+			  show_usage(EXIT_FAILURE);
+			}
 		}
 	  else if (IS_NOT_OPTARG(argv[idx]))
 		{
@@ -240,6 +255,8 @@ main(int argc, char *const argv[])
 	{
 	  error_fatal("no input files");
 	}
+
+  cgen_init();
 
   compile_files(argc - idx, argv + idx);
   return (EXIT_SUCCESS);
