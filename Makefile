@@ -1,23 +1,28 @@
 ifeq ($(OS),Windows_NT)
-CC	:= cl
-LD	:= link
-RM	:= cmd /c del /s
+CC		:= cl
+LD		:= link
+RM		:= cmd /c del /s
+ISCC	:= iscc
 else
 CC	?= gcc
 LD	:= $(CC)
 RM	:= rm -f
 endif
-PYTHON := python3
+TAR		:= tar
+PYTHON	:= python3
+M4		:= m4
 
 include build-aux/toolchain.mk
 include build-aux/version.mk
+include build-aux/package.mk
 
 ifdef cc_msvc
 CFLAGS	+= /TC /Wall /WX /wd5045 /wd4820 /Za /D_CRT_SECURE_NO_WARNINGS \
-			/DVERSION=$(VERSION_STR)
+			/DVERSION=$(VERSION_STR) /DPACKAGE_BUGREPORT=$(PACKAGE_BUGREPORT_STR)
 else
 
-CFLAGS	+= -Wall -Werror -Wextra -DVERSION="$(VERSION_STR)"
+CFLAGS	+= -Wall -Werror -Wextra -DVERSION="$(VERSION_STR)" 
+CFLAGS	+= -DPACKAGE_BUGREPORT="$(PACKAGE_BUGREPORT_STR)"
 ifdef cc_clang_gcc
 CFLAGS	+= -ansi -pedantic
 endif
@@ -27,11 +32,16 @@ ifdef ld_msvc
 LDFLAGS	+= /SUBSYSTEM:CONSOLE
 endif
 
-
 ifeq ($(OS),Windows_NT)
 TARGET	= plsc.exe
 else
 TARGET	= plsc
+endif
+
+ifeq ($(OS),Windows_NT)
+DIST_TARGETS	= $(PACKAGE_TARNAME)-$(PACKAGE_VERSION).zip $(PACKAGE)-setup.exe
+else
+DIST_TARGETS	= $(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.gz
 endif
 
 SRCS	= main.c scanner.c token.c term.c error.c json.c dump.c keyword.c \
@@ -70,6 +80,18 @@ else
 	$(CC) -o $@ -c $< $(CFLAGS)
 endif
 
+.PHONU: dist
+dist: $(DIST_TARGETS)
+
+%.zip: $(TARGET)
+	$(TAR) -caf $@ $^
+
+%.tar.gz: $(TARGET)
+	$(TAR) -czf $@ $^
+
+$(PACKAGE)-setup.exe: $(TARGET)
+	$(ISCC) /Qp win32/setup.iss
+
 .PHONY: test
 test: CFLAGS += --coverage
 test: LDFLAGS += --coverage
@@ -82,4 +104,4 @@ check: $(TARGET)
 
 .PHONY: clean
 clean:
-	$(RM) $(DELOBJS) $(TARGET)
+	$(RM) $(DELOBJS) $(TARGET) $(DIST_TARGETS)

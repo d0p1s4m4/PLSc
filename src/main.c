@@ -109,8 +109,9 @@ show_usage(int retval)
   OPTARG_LONG_HELP("version", "output version information and exit.");
 
   printf("\nExamples:\n");
-  printf("\t%s main.pls\tTranspile main.pls to main.s\n", prg_name);
+  printf("\t%s main.pls\tTranspile main.pls to main.s\n\n", prg_name);
 
+  printf("Report bug to %s\n", PACKAGE_BUGREPORT);
   exit(retval);
 }
 
@@ -247,7 +248,14 @@ main(int argc, char *const argv[])
 #ifndef _WIN32
   prg_name = basename(argv[0]);
 #else /* !_WIN32 */
-  prg_name = argv[0];
+  if (strchr(argv[0], '\\'))
+	{
+	  prg_name = strrchr(argv[0], '\\') + 1;
+	}
+  else
+	{
+	  prg_name = argv[0];
+	}
 #endif /* !_WIN32 */
   idx = parse_flags(argc - 1, argv + 1);
   idx++; /* skip argv[0] :) */

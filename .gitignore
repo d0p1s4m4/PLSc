@@ -4,3 +4,5 @@
 *.gcda
 *.gcno
 *.html
+*.zip
+*.tar.gz

@@ -9,7 +9,7 @@ AppUpdatesURL=https://github.com/d0p1s4m4/PLSc/releases
 
 LicenseFile=..\LICENSE
 
-OutputBaseFilename=plsc-install
+OutputBaseFilename=plsc-setup
 OutputDir=..\
 
 WizardStyle=modern
