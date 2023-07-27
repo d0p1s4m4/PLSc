@@ -10,10 +10,12 @@ def run_test(source, expected):
             ["./plsc", "--dump-token", source], capture_output=True)
         if res.returncode != 0:
             return False
+        clean_out = res.stdout.replace(b'\\', b'/')
         with open(expected, "r") as f:
             expected_obj = json.load(f)
-        return expected_obj == json.loads(res.stdout)
-    except:
+        return expected_obj == json.loads(clean_out)
+    except Exception as err:
+        print(err)
         return False
 
 if __name__ == '__main__':

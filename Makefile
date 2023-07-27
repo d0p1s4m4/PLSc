@@ -93,10 +93,22 @@ $(PACKAGE)-setup.exe: $(TARGET)
 	$(ISCC) /Qp win32/setup.iss
 
 .PHONY: test
+ifdef cc_msvc
+test: LDFLAGS += /Profile
+else
 test: CFLAGS += --coverage
 test: LDFLAGS += --coverage
+endif
 test: $(TARGET)
+ifdef cc_msvc
+	vsinstr /coverage /verbose $(TARGET)
+	VSPerfCmd /start:coverage /output:test.coverage
+	timeout 3
+endif
 	@ $(PYTHON) test/runner.py test
+ifdef cc_msvc
+	VSPerfCmd /shutdown
+endif
 
 .PHONY: check
 check: $(TARGET)
