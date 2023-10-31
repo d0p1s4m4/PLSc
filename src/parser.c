@@ -42,12 +42,73 @@ parser_init(Scanner *scanner)
   return (parser);
 }
 
+/*
+ * unit
+ *  : external_declaration
+ *  | unit external_declaration
+ *  ;
+ *
+ * external_declaration
+ *  : function_definition
+ *  | declaration
+ *  ;
+ *
+ * function_definition
+ *  : T_PROCEDURE declarator ';' compound_statement
+ *  TODO: | T_FUNCTION T_IDENT ';' compound_statement
+ *  ;
+ *
+ * declarator
+ *  : T_IDENTIFIER
+ *  | T_IDENTIFIER '(' ')'
+ *  | T_IDENTIFIER '(' parameter_list ')'
+ *
+ *
+ */
+
+static void
+type(Parser *parser)
+{
+  if (next(parser)->token != T_IDENT)
+	{
+	  error_fatal("expected type identifier");
+	}
+
+  printf(" %s ", peek(parser)->value.strval);
+
+  if (next(parser)->token == T_PTR)
+	{
+	  printf(" ptr ");
+	  next(parser);
+	}
+  else if (peek(parser)->token == T_LPAREN)
+	{
+	  if (next(parser)->token == T_NUMBER)
+		{
+		  printf(" ARRAY[%s] ", peek(parser)->value.strval);
+		}
+	  else
+		{
+		  error_fatal("expected number");
+		}
+
+	  if (next(parser)->token == T_RPAREN)
+		{
+		  next(parser);
+		}
+	  else
+		{
+		  error_fatal("expected )");
+		}
+	}
+}
+
 static void
 declare(Parser *parser)
 {
   if (next(parser)->token != T_IDENT)
 	{
-	  error_fatal("TODO: declare");
+	  error_fatal("expected identifier");
 	}
 
   printf("declare(%s)", peek(parser)->value.strval);
@@ -57,16 +118,41 @@ declare(Parser *parser)
 	  error_fatal("expected AS");
 	}
 
-  if (next(parser)->token != T_IDENT)
+  type(parser);
+
+  if (peek(parser)->token != T_SEMICOLON)
 	{
-	  error_fatal("wtf?!");
+	  error_fatal("expected ';'");
 	}
 
-	printf(" as %s\n", peek(parser)->value.strval);
-
-	while (next(parser)->token != T_SEMICOLON)
-	  {}
+  printf("\n");
 }
+
+#if 0
+static void
+if_stmt(Parser *parser)
+{
+  (void)parser;
+}
+
+static void
+while_stmt(Parser *parser)
+{
+  (void)parser;
+}
+
+static void
+for_stmt(Parser *parser)
+{
+  (void)parser;
+}
+
+static void
+return_stmt(Parser *parser)
+{
+  (void)parser;
+}
+#endif
 
 static void
 block(Parser *parser)
@@ -90,11 +176,26 @@ block(Parser *parser)
 		  block(parser);
 		  break;
 
+		case T_IF:
+		  printf("IF stmt\n");
+		  while (next(parser)->token != T_SEMICOLON) {}
+		  break;
+
+		case T_LSQUARE:
+		  printf("[method call]\n");
+		  while (next(parser)->token != T_SEMICOLON){}
+		  break;
+
 		case T_DECLARE:
 		  declare(parser);
 		  break;
 
+		case T_IDENT:
+		  printf("identifier TODO\n");
+		  break;
+
 		default:
+		  printf("????\n");
 		  break;
 		}
 	}
@@ -124,11 +225,18 @@ function(Parser *parser, int is_proc)
 static void
 declarations(Parser *parser)
 {
+  /*int is_extern;
+
+	is_extern = 0;*/
+  if (peek(parser)->token == T_EXTERN)
+	{
+	  /*  is_extern = 1;*/
+	  printf("extern ");
+	  next(parser);
+	}
+
   switch (peek(parser)->token)
 	{
-	case T_EXTERN:
-	  printf("extern\n");
-	  break;
 	case T_DECLARE:
 	  declare(parser);
 	  break;
@@ -139,7 +247,7 @@ declarations(Parser *parser)
 	  function(parser, 0);
 	  break;
 	default:
-	  printf("%d\n", peek(parser)->token);
+	  error_fatal("not a decl");
 	  break;
 	}
 }

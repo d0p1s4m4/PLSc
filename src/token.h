@@ -105,10 +105,12 @@ typedef enum {
   T_BEGIN,
   T_END,
   T_AS,
+  T_PTR,
   T_DO,
   T_FOR,
   T_WHILE,
   T_LOOP,
+  T_IF,
   T_EOF,
   T_ERROR,
   T_MAX

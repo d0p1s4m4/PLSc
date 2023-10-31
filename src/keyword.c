@@ -11,9 +11,11 @@ Keyword keywords[] = {
   {"DECLARE", T_DECLARE},
   {"DCL", T_DECLARE},
   {"AS", T_AS},
+  {"PTR", T_PTR},
   {"BEGIN", T_BEGIN},
   {"END", T_END},
   {"WHILE", T_WHILE},
+  {"IF", T_IF},
 
   {NULL, T_ERROR}
 };

@@ -15,5 +15,6 @@ void cgen_init(void);
 
 extern Backend cgen_nasm;
 extern Backend cgen_gas;
+extern Backend cgen_c;
 
 #endif /* !CGEN_H */

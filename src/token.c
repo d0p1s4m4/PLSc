@@ -57,6 +57,7 @@ static char *token_str[] = {
   "BEGIN",
   "END",
   "AS",
+  "PTR",
   "DO",
   "FOR",
   "WHILE",

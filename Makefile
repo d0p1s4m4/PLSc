@@ -39,9 +39,9 @@ TARGET	= plsc
 endif
 
 ifeq ($(OS),Windows_NT)
-DIST_TARGETS	= $(PACKAGE_TARNAME)-$(PACKAGE_VERSION).zip $(PACKAGE)-setup.exe
+DIST_TARGETS	= "$(PACKAGE_TARNAME)-$(PACKAGE_VERSION).zip" $(PACKAGE)-setup.exe
 else
-DIST_TARGETS	= $(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.gz
+DIST_TARGETS	= "$(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.gz"
 endif
 
 SRCS	= main.c scanner.c token.c term.c error.c json.c dump.c keyword.c \

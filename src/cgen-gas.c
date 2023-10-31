@@ -34,4 +34,12 @@ cgen_gas_function(FILE *stream, char const *name)
   fprintf(stream, "\tleave\n\ret\n");
 }
 
+void
+cgen_gas_init(FILE *stream, const char *fname)
+{
+  fprintf(stream,
+		  "\t.file \"%s\"\n"
+		  "\t.text\n", fname);
+}
+
 CGEN_BACKEND(gas);
