@@ -94,20 +94,20 @@ $(PACKAGE)-setup.exe: $(TARGET)
 
 .PHONY: test
 ifdef cc_msvc
-test: LDFLAGS += /Profile
+test: LDFLAGS += # /Profile
 else
 test: CFLAGS += --coverage
 test: LDFLAGS += --coverage
 endif
 test: $(TARGET)
 ifdef cc_msvc
-	vsinstr /coverage /verbose $(TARGET)
-	VSPerfCmd /start:coverage /output:test.coverage
-	timeout 3
+#	vsinstr /coverage /verbose $(TARGET)
+#	VSPerfCmd /start:coverage /output:test.coverage
+#	timeout 3
 endif
 	@ $(PYTHON) test/runner.py test
 ifdef cc_msvc
-	VSPerfCmd /shutdown
+#	VSPerfCmd /shutdown
 endif
 
 .PHONY: check

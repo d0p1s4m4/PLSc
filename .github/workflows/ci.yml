@@ -28,3 +28,14 @@ jobs:
         with:
           gcov: true
           token: ${{ secrets.CODECOV_TOKEN }}
+  test:
+    needs: [test-coverage]
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Test
+        run: make test
