@@ -7,7 +7,11 @@ endif
 
 git_commit := $(shell git rev-parse --short HEAD)
 
+ifneq ($(RUNNER_OS),)
+VERSION := $(git_tag)-$(RUNNER_OS)
+else
 VERSION := $(git_tag)
+endif
 
 ifneq ($(OS),Windows_NT)
 
