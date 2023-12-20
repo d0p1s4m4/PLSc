@@ -87,7 +87,7 @@ escapte sequences:
 - Tabulation ~\t~
 - Line feed ~\n~
 - Carriage return ~\r~
-- Double quotation mark ~\\"~
+- Double quotation mark ~\"~
 - Backslash ~\\~
 
 ** Operators

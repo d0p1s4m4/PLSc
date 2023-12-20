@@ -10,3 +10,4 @@
 *.pdb
 *.coverage
 /plsc
+*.res

@@ -2,6 +2,7 @@ ifeq ($(OS),Windows_NT)
 CC		:= cl
 LD		:= link
 RM		:= cmd /c del /s
+RC		:= rc
 ISCC	:= iscc
 else
 CC	?= gcc
@@ -48,7 +49,8 @@ SRCS	= main.c scanner.c token.c term.c error.c json.c dump.c keyword.c \
 	parser.c cgen.c cgen-nasm.c cgen-gas.c cgen-athena.c
 OBJS	= $(addprefix src/, $(SRCS:.c=.obj))
 ifeq ($(OS),Windows_NT)
-DELOBJS	= $(addprefix src\, $(SRCS:.c=.obj))
+OBJS	+= win32/res.res
+DELOBJS	= $(addprefix src\, $(SRCS:.c=.obj)) win32\res.res
 else
 DELOBJS	= $(OBJS)
 endif
@@ -79,6 +81,9 @@ ifdef cc_msvc
 else
 	$(CC) -o $@ -c $< $(CFLAGS)
 endif
+
+%.res: %.rc
+	$(RC) /Fo $@ $<
 
 .PHONY: dist
 dist: $(DIST_TARGETS)
