@@ -34,6 +34,16 @@
 #include "term.h"
 
 void
+term(FILE *stream, int effect)
+{
+  if (!colorize)
+	{
+	  return;
+	}
+  fprintf(stream, "\033[%dm", effect);
+}
+
+void
 term_color_red(FILE *stream)
 {
   if (!colorize)
@@ -44,6 +54,16 @@ term_color_red(FILE *stream)
 }
 
 void
+term_color_magenta(FILE *stream)
+{
+  if (!colorize)
+	{
+	  return;
+	}
+  fprintf(stream, "\033[35m");
+}
+
+void
 term_text_bold(FILE *stream)
 {
   if (!colorize)
@@ -51,6 +71,16 @@ term_text_bold(FILE *stream)
 	  return;
 	}
   fprintf(stream, "\033[1m");
+}
+
+void
+term_text_underline(FILE *stream)
+{
+  if (!colorize)
+	{
+	  return;
+	}
+  fprintf(stream, "\033[4m");
 }
 
 void

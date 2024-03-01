@@ -11,3 +11,6 @@
 *.coverage
 /plsc
 *.res
+*.o
+*.s
+a.out

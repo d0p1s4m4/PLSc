@@ -29,25 +29,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TERM_H
-# define TERM_H 1
+#ifndef GUESS_H
+# define GUESS_H 1
 
-# include <stdio.h>
+typedef struct
+{
+} GuessEntry;
 
-/* XXX: refactor ($PLSC_COLORS env ?) */
+typedef struct
+{
+  char *str;
+  int dist;
+} GuessDict;
 
-# define TERM_RED       31
-# define TERM_MAGENTA   35
-# define TERM_BOLD      1
-# define TERM_UNDERLINE 4
-# define TERM_RESET     0
+GuessDict *guess_dict_create(void);
+GuessDict *guess_dict_update(GuessDict *dict);
+void guess_dict_destroy(GuessDict *dict);
 
-void term(FILE *stream, int effect);
-void term_color_red(FILE *stream);
-void term_color_magenta(FILE *stream);
-void term_text_bold(FILE *stream);
-void term_text_underline(FILE *stream);
-void term_color_reset(FILE *stream);
-void term_url(FILE *stream, char const *title, char const *url);
-
-#endif /* !TERM_H */
+#endif /* !GUESS_H */

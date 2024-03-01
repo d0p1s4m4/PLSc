@@ -29,25 +29,4 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TERM_H
-# define TERM_H 1
-
-# include <stdio.h>
-
-/* XXX: refactor ($PLSC_COLORS env ?) */
-
-# define TERM_RED       31
-# define TERM_MAGENTA   35
-# define TERM_BOLD      1
-# define TERM_UNDERLINE 4
-# define TERM_RESET     0
-
-void term(FILE *stream, int effect);
-void term_color_red(FILE *stream);
-void term_color_magenta(FILE *stream);
-void term_text_bold(FILE *stream);
-void term_text_underline(FILE *stream);
-void term_color_reset(FILE *stream);
-void term_url(FILE *stream, char const *title, char const *url);
-
-#endif /* !TERM_H */
+#include "levenshtein.h"
